@@ -1,0 +1,85 @@
+harvest_data
+- harvest_id (pk, int8)
+- harvest_date (timestamp)
+- plant_id (int8)
+- coffee_raw_quantity (float8)
+- coffee_dry_quantity (float8)
+- coffee_premium_grade (float8)
+- coffee_fine_grade (float8)
+- coffee_commercial_grade (float8)
+- farmer_id (uuid)
+
+sessions
+- id (pk, uuid)
+- user_id (uuid)
+- token (text)
+- created_at (timestamp)
+
+users
+- id (pk, uuid)
+- first_name (text)
+- middle_name (text)
+- last_name (text)
+- email (text)
+- role (text)
+- created_at (timestamp)
+
+plant_status
+- plant_status_id (pk, int8)
+- plant_id (int8)
+- status (varchar)
+- age_stage (varchar)
+- soil_ph (float4)
+- moisture_level (float4)
+- last_fertilized (date)
+- created_at (timestamp)
+- updated_at (timestamp)
+
+plant_data
+- plant_id (pk, int8)
+- coffee_variety (varchar)
+- planting_date (timestamp)
+- number_of_tree_planted (int8)
+- farmer_id (uuid)
+
+farmer_detail
+- farmers_details (pk, int8)
+- id (uuid)
+- farm_location (varchar)
+- farm_size (float8)
+- farm_elevation (float8)
+- plant_id (int8)
+- created_at (timestamp)
+
+
+coffee_prices
+- price_id (pk, int8)
+- coffee_type (coffee_type_enum)
+- price_per_kg (numeric)
+- currency (varchar)
+- is_active (bool)
+- created_by (uuid)
+- created_at (timestamptz)
+- updated_at (timestamptz)
+
+coffee_price_history
+- history_id (pk, int8)
+- price_id (int8)
+- coffee_type (coffee_type_enum)
+- old_price (numeric)
+- new_price (numeric)
+- changed_by (uuid)
+- change_date (timestamptz)
+- reason (text)
+
+Relationships:
+- coffee_prices.created_by -> auth.users.id
+- coffee_price_history.price_id -> coffee_prices.price_id
+- coffee_price_history.changed_by -> auth.users.id
+- harvest_data.plant_id -> plant_data.plant_id
+- harvest_data.farmer_id -> farmer_detail.id
+- sessions.user_id -> users.id
+- plant_status.plant_id -> plant_data.plant_id
+- plant_data.farmer_id -> farmer_detail.id
+- farmer_detail.id -> users.id (implied by the dashed line to 'id' in users, and also the connection from plant_data.farmer_id to farmer_detail.id and harvest_data.farmer_id to farmer_detail.id, suggesting 'id' in farmer_detail is a user ID)
+- farmer_detail.plant_id -> plant_data.plant_id
